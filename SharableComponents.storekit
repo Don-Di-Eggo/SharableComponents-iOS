@@ -1,0 +1,38 @@
+{
+  "identifier": "A1B2C3D4-E5F6-7890-ABCD-EF1234567890",
+  "nonConsumableProducts": [
+    {
+      "displayPrice": "0.99",
+      "familyShareable": false,
+      "identifier": "com.example.app.unlock",
+      "localizations": [
+        {
+          "description": "Unlock all features of the app with a single one-time purchase.",
+          "displayName": "Full App Unlock",
+          "locale": "en_US"
+        }
+      ],
+      "productID": "com.example.app.unlock",
+      "referenceName": "Full App Unlock",
+      "type": "NonConsumable"
+    }
+  ],
+  "settings": {
+    "_storeKitErrors": [
+      {
+        "current": null,
+        "enabled": false,
+        "name": "Load Products"
+      },
+      {
+        "current": null,
+        "enabled": false,
+        "name": "Purchase"
+      }
+    ]
+  },
+  "version": {
+    "major": 2,
+    "minor": 0
+  }
+}
