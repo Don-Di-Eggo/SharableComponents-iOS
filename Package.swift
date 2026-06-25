@@ -31,8 +31,8 @@ let package = Package(
         ),
         .target(
             name: "AppUpdateNotifier",
-            path: "SharableComponents/Components/AppUpdateNotifier",
-            dependencies: ["InAppPurchase"]
+            dependencies: ["InAppPurchase"],
+            path: "SharableComponents/Components/AppUpdateNotifier"
         ),
         .target(
             name: "FeedbackManager",
