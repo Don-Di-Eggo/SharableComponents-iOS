@@ -34,9 +34,24 @@ struct ContentView: View {
                     Label("Palette", systemImage: "swatchpalette")
                 }
 
+            CategorizedPaletteTestView()
+                .tabItem {
+                    Label("Catalog", systemImage: "square.grid.3x3.fill")
+                }
+
             AppUpdateNotifierTestView()
                 .tabItem {
                     Label("Updates", systemImage: "sparkles.rectangle.stack")
+                }
+
+            PushSurveyTestView()
+                .tabItem {
+                    Label("Survey", systemImage: "list.clipboard")
+                }
+
+            CustomerIdentifierTestView()
+                .tabItem {
+                    Label("GUID", systemImage: "person.text.rectangle")
                 }
         }
     }
@@ -610,6 +625,50 @@ private struct AppPaletteTestView: View {
     }
 }
 
+// MARK: - CategorizedAppPaletteSelection test harness
+
+private struct CategorizedPaletteTestView: View {
+
+    @State private var selectedID: String?
+    @State private var chosen: CategorizedPalette?
+
+    var body: some View {
+        NavigationStack {
+            VStack(spacing: 0) {
+                if let chosen {
+                    selectionBanner(chosen)
+                    Divider()
+                }
+                CategorizedAppPaletteSelectionView(selection: $selectedID) { palette in
+                    chosen = palette
+                }
+            }
+            .background((chosen?.lightestColor ?? Color(.systemBackground)).opacity(0.30).ignoresSafeArea())
+            .tint(chosen?.dominantColor ?? .accentColor)
+            .animation(.easeInOut(duration: 0.25), value: chosen?.id)
+            .navigationTitle("Palette Catalog")
+            .navigationBarTitleDisplayMode(.inline)
+        }
+    }
+
+    private func selectionBanner(_ palette: CategorizedPalette) -> some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(spacing: 8) {
+                Text(palette.name)
+                    .font(.headline)
+                    .foregroundStyle(palette.dominantColor)
+                Spacer()
+                Text(palette.moods.map(\.label).sorted().joined(separator: ", "))
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+            }
+
+            CategorizedPalettePreview(palette: palette)
+        }
+        .padding()
+    }
+}
+
 // MARK: - AppUpdateNotifier test harness
 
 private struct AppUpdateNotifierTestView: View {
@@ -679,6 +738,116 @@ private struct AppUpdateNotifierTestView: View {
             }
         }
         .font(.subheadline)
+    }
+}
+
+// MARK: - PushSurvey test harness
+
+private struct PushSurveyTestView: View {
+
+    @ObservedObject private var manager = PushSurveyManager.shared
+
+    private let previewSurvey = Survey(
+        guid: "preview-001",
+        title: "Help shape what's next",
+        subtitle: "Takes about 30 seconds. Your input directly drives our roadmap.",
+        minLaunches: 1,
+        questions: [
+            SurveyQuestion(id: "widgets",   type: .likert,   prompt: "Home screen widgets"),
+            SurveyQuestion(id: "shortcuts", type: .likert,   prompt: "Shortcuts integration"),
+            SurveyQuestion(id: "icloud",    type: .likert,   prompt: "iCloud sync"),
+            SurveyQuestion(id: "other",     type: .freeText, prompt: "Anything else you'd like to see?")
+        ]
+    )
+
+    var body: some View {
+        NavigationStack {
+            VStack(spacing: 24) {
+                Spacer()
+
+                Image(systemName: "list.clipboard.fill")
+                    .font(.system(size: 60))
+                    .foregroundStyle(.tint)
+
+                Text("PushSurvey")
+                    .font(.title2.bold())
+
+                Text("Simulates a survey with a local preview payload.\nResponses are not posted in test mode.")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal)
+
+                Divider()
+
+                VStack(spacing: 12) {
+                    Button("Show Survey") {
+                        Task { await manager.showForTesting(previewSurvey) }
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .controlSize(.large)
+
+                    Button("Reset State") {
+                        manager.reset()
+                    }
+                    .buttonStyle(.bordered)
+                    .foregroundStyle(.secondary)
+                    .controlSize(.large)
+                }
+
+                Spacer()
+            }
+            .padding()
+            .navigationTitle("Push Survey")
+            .navigationBarTitleDisplayMode(.inline)
+        }
+    }
+}
+
+// MARK: - CustomerIdentifier test harness
+
+private struct CustomerIdentifierTestView: View {
+
+    @State private var customerID = CustomerIdentifier.shared.id
+
+    var body: some View {
+        NavigationStack {
+            VStack(spacing: 24) {
+                Spacer()
+
+                Image(systemName: "person.text.rectangle.fill")
+                    .font(.system(size: 60))
+                    .foregroundStyle(.tint)
+
+                Text("CustomerIdentifier")
+                    .font(.title2.bold())
+
+                VStack(spacing: 8) {
+                    Text("Install GUID")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+
+                    Text(customerID)
+                        .font(.system(.body, design: .monospaced))
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal)
+                        .textSelection(.enabled)
+                }
+
+                Divider()
+
+                Text("This GUID is generated automatically on first launch and persisted.\nIt is stable for the lifetime of the install and resets only if the app is deleted and reinstalled.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal)
+
+                Spacer()
+            }
+            .padding()
+            .navigationTitle("Customer ID")
+            .navigationBarTitleDisplayMode(.inline)
+        }
     }
 }
 

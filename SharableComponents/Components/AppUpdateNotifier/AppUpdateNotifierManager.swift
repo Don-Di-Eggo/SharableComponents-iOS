@@ -8,9 +8,7 @@ import Observation
 
 /// Manages the show/suppress state for the update notifier sheet.
 ///
-/// Call `configure(_:)` once at app startup — typically right after
-/// `InAppPurchaseManager` and `AppReviewRequestManager` are configured,
-/// so sequencing is predictable.
+/// Call `configure(_:)` once at app startup.
 ///
 /// ```swift
 /// // In App.init:

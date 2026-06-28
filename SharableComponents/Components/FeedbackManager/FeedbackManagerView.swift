@@ -158,11 +158,14 @@ public struct FeedbackManagerView: View {
         let model = UIDevice.current.model
         #endif
 
+        let customerID = CustomerIdentifier(suiteName: config.suiteName).id
+
         return """
         ---
         App: \(appName) \(appVersion) (\(buildNumber))
         \(osLabel): \(osVersion)
         Device: \(model)
+        ID: \(customerID)
         ---
         """
     }

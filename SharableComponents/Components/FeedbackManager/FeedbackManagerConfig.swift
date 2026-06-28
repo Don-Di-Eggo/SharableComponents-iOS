@@ -54,8 +54,12 @@ public struct FeedbackManagerConfig {
     /// Leave empty to start the body with the prompts directly.
     public var bodyIntro: String = ""
 
-    /// When true, appends app + device info to the bottom of every email body.
+    /// When true, appends app + device info (including CustomerIdentifier) to the bottom of every email body.
     public var includeSystemInfo: Bool = true
+
+    /// UserDefaults suite name shared with other components. Ensures CustomerIdentifier
+    /// uses the same storage group as the rest of your app's components.
+    public var suiteName: String? = nil
 
     // MARK: - Styling
 

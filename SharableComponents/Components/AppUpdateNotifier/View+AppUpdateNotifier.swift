@@ -11,7 +11,6 @@ public extension View {
     ///
     /// The sheet appears automatically when `AppUpdateNotifierManager.shared.shouldShow`
     /// is true — i.e. the first launch after a new app version is installed.
-    /// It yields automatically when the IAP paywall is blocking the screen.
     ///
     /// Pass `accentColor` and `backgroundColor` from whichever color store the
     /// host app uses (`AppColorStore` or `AppPaletteStore`), or omit both to fall
@@ -59,11 +58,8 @@ private struct AppUpdateNotifierModifier: ViewModifier {
     let accentColor: Color
     let backgroundColor: Color
 
-    // Observed so the modifier reacts when the IAP block state changes.
-    @ObservedObject private var iapManager = InAppPurchaseManager.shared
-
     private var shouldPresent: Bool {
-        manager.shouldShow && !iapManager.isBlocked
+        manager.shouldShow
     }
 
     func body(content: Content) -> some View {

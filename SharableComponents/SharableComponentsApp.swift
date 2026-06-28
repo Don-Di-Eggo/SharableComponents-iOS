@@ -37,6 +37,13 @@ struct SharableComponentsApp: App {
         )
         AppUpdateNotifierManager.shared.configure(updateConfig)
 
+        var surveyConfig = PushSurveyConfig(
+            surveyURL: URL(string: "https://chainbreaker.app/surveys/current.json")!,
+            responseBaseURL: URL(string: "https://chainbreaker.app/surveys")!
+        )
+        PushSurveyManager.shared.configure(surveyConfig)
+        Task { await PushSurveyManager.shared.recordLaunch() }
+
         try? Tips.configure([.displayFrequency(.immediate)])
         TipKitGuard.isReady = true
     }
@@ -47,6 +54,7 @@ struct SharableComponentsApp: App {
                 .environment(colorStore)
                 .environment(paletteStore)
                 .appUpdateNotifier()
+                .pushSurvey()
         }
     }
 }
